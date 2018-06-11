@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Task;
 use Validator;
+use App\Models\User;
 
 class TaskController extends BaseController
 {
@@ -15,7 +16,7 @@ class TaskController extends BaseController
     public function index(Request $request)
     {
         $tasks = Task::all();
-
+        
         return $this->sendResponse($tasks->toArray(), 'Tasks retrieved successfully.');
     }
 
@@ -26,7 +27,6 @@ class TaskController extends BaseController
      */
     public function create()
     {
-        //
     }
 
     /**
@@ -81,9 +81,9 @@ class TaskController extends BaseController
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit()
     {
-        //
+
     }
 
     /**

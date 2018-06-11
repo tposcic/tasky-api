@@ -10,29 +10,22 @@ namespace App\Models;
 use Reliese\Database\Eloquent\Model as Eloquent;
 
 /**
- * Class Preference
+ * Class OauthPersonalAccessClient
  * 
  * @property int $id
- * @property int $user_id
+ * @property int $client_id
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
- * 
- * @property \App\Models\User $user
  *
  * @package App\Models
  */
-class Preference extends Eloquent
+class OauthPersonalAccessClient extends Eloquent
 {
 	protected $casts = [
-		'user_id' => 'int'
+		'client_id' => 'int'
 	];
 
 	protected $fillable = [
-		'user_id'
+		'client_id'
 	];
-
-	public function user()
-	{
-		return $this->belongsTo(\App\Models\User::class);
-	}
 }
