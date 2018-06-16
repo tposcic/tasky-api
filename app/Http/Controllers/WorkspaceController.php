@@ -40,7 +40,21 @@ class WorkspaceController extends BaseController
      */
     public function store(Request $request)
     {
-        //
+        $input = $request->all();
+
+        $validator = Validator::make($input, [
+            'title' => 'required',
+            'description' => 'required',
+            'icon' => 'nullable',
+        ]);
+
+        if($validator->fails()){
+            return $this->sendError('Validation Error.', $validator->errors());       
+        }
+
+        $task = Workspace::create($input);
+
+        return $this->sendResponse($task->toArray(), 'Workspace created successfully.');
     }
 
     /**
@@ -51,7 +65,13 @@ class WorkspaceController extends BaseController
      */
     public function show($id)
     {
-        //
+        $workspace = Workspace::find($id);
+
+        if (is_null($workspace)) {
+            return $this->sendError('Workspace not found.');
+        }
+
+        return $this->sendResponse($task->toArray(), 'Workspace retrieved successfully.');
     }
 
     /**
