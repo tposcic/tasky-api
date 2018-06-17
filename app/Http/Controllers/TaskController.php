@@ -16,7 +16,7 @@ class TaskController extends BaseController
     public function index(Request $request)
     {
         $tasks = Task::all();
-        
+
         return $this->sendResponse($tasks->toArray(), 'Tasks retrieved successfully.');
     }
 
@@ -49,8 +49,8 @@ class TaskController extends BaseController
             'finished_at' => 'nullable',
         ]);
 
-        if($validator->fails()){
-            return $this->sendError('Validation Error.', $validator->errors());       
+        if ($validator->fails()) {
+            return $this->sendError('Validation Error.', $validator->errors());
         }
 
         $task = Task::create($input);
@@ -107,8 +107,8 @@ class TaskController extends BaseController
             'finished_at' => 'nullable',
         ]);
 
-        if($validator->fails()){
-            return $this->sendError('Validation Error.', $validator->errors());       
+        if ($validator->fails()) {
+            return $this->sendError('Validation Error.', $validator->errors());
         }
 
         $task->update($validator);

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Workgroup;
 use Validator;
+use App\Models\Workspace;
 
 class RegisterController extends BaseController
 {
@@ -24,15 +25,36 @@ class RegisterController extends BaseController
             'c_password' => 'required|same:password',
         ]);
 
-        if($validator->fails()){
-            return $this->sendError('Validation Error.', $validator->errors());       
+        if ($validator->fails()) {
+            return $this->sendError('Validation Error.', $validator->errors());
         }
 
         $input = $request->all();
         $input['password'] = bcrypt($input['password']);
         $user = User::create($input);
-        $success['token'] =  $user->createToken('MyApp')->accessToken;
-        $success['name'] =  $user->name;
+
+        $workspace = Workspace::create([
+            'title' => $user->name . "'s Workspace",
+            'description' => $user->name . "'s personal workspace",
+            'icon' => 'help',
+            'type' => 'personal'
+        ]);
+
+        $workspace->categories()->create([
+            'workspace_id' => $workspace->id,
+            'title' => $user->name . "'s tasks",
+            'description' => 'Default tasks category',
+            'icon' => 'help',
+        ]);
+
+        $user->preferences()->create([
+            'user_id' => $user->id
+        ]);
+        
+        $user->workspaces()->attach($workspace->id, array('role' => 'admin'));
+
+        $success['token'] = $user->createToken('MyApp')->accessToken;
+        $success['name'] = $user->name;
 
         return $this->sendResponse($success, 'User register successfully.');
     }

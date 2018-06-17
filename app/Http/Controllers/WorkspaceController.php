@@ -17,8 +17,8 @@ class WorkspaceController extends BaseController
     public function index(Request $request)
     {
         $user = User::find($request->user()->id);
+        $workspaces = $user->workspaces()->with('categories')->get();
 
-        $workspaces = $user->workspaces;
         return $this->sendResponse($workspaces->toArray(), 'Workspaces retrieved successfully.');
     }
 
@@ -48,13 +48,22 @@ class WorkspaceController extends BaseController
             'icon' => 'nullable',
         ]);
 
-        if($validator->fails()){
-            return $this->sendError('Validation Error.', $validator->errors());       
+        if ($validator->fails()) {
+            return $this->sendError('Validation Error.', $validator->errors());
         }
 
-        $task = Workspace::create($input);
+        $workspace = Workspace::create($input);
 
-        return $this->sendResponse($task->toArray(), 'Workspace created successfully.');
+        $workspace->categories()->create([
+            'workspace_id' => $workspace->id,
+            'title' => $workspace->title . " tasks",
+            'description' => 'Default tasks category',
+            'icon' => 'help',
+        ]);
+        
+        $workspace->users()->attach($request->user()->id, array('role' => 'admin'));
+
+        return $this->sendResponse($workspace->toArray(), 'Workspace created successfully.');
     }
 
     /**
