@@ -57,7 +57,7 @@ class TaskController extends BaseController
      */
     public function show($id)
     {
-        $task = Task::find($id);
+        $task = Task::with('tasks')->find($id);
 
         if (is_null($task)) {
             return $this->sendError('Task not found.');
@@ -73,8 +73,14 @@ class TaskController extends BaseController
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Task $task)
+    public function update(Request $request, $id)
     {
+        $task = Task::find($id);
+        
+        if (is_null($task)) {
+            return $this->sendError('Task not found.');
+        }
+
         $input = $request->all();
 
         $validator = Validator::make($input, [
@@ -91,7 +97,7 @@ class TaskController extends BaseController
             return $this->sendError('Validation Error.', $validator->errors());
         }
 
-        $task->update($validator);
+        $task->update($input);
 
         return $this->sendResponse($task->toArray(), 'Task updated successfully.');
     }

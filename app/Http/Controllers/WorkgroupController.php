@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-class WorkgroupController extends Controller
+class WorkgroupController extends BaseController
 {
     /**
      * Display a listing of the resource.

@@ -69,7 +69,7 @@ class WorkspaceController extends BaseController
      */
     public function show($id)
     {
-        $workspace = Workspace::find($id);
+        $workspace = Workspace::with('categories')->find($id);
 
         if (is_null($workspace)) {
             return $this->sendError('Workspace not found.');
@@ -85,8 +85,14 @@ class WorkspaceController extends BaseController
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Workspace $workspace)
+    public function update(Request $request, $id)
     {
+        $workspace = Workspace::find($id);
+
+        if (is_null($workspace)) {
+            return $this->sendError('Workspace not found.');
+        }
+
         $input = $request->all();
 
         $validator = Validator::make($input, [
@@ -111,8 +117,14 @@ class WorkspaceController extends BaseController
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Request $request, Workspace $workspace)
+    public function destroy(Request $request, $id)
     {
+        $workspace = Workspace::find($id);
+
+        if (is_null($workspace)) {
+            return $this->sendError('Workspace not found.');
+        }
+
         $workspace_role = $request->user()->workspaces()->whereWorkspaceId($workspace->id)->first()->pivot->role;
 
         if($workspace_role !== 'admin'){
@@ -150,7 +162,7 @@ class WorkspaceController extends BaseController
      * @param Request $request
      * @return \Illuminate\Http\Response
      */
-    public function addUser($id, Request $request)
+    public function addUser(Request $request, $id)
     {
         $input = $request->all();
 

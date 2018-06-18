@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Category;
+use App\Models\Task;
 
-class CategoryController extends Controller
+class CategoryController extends BaseController
 {
     /**
      * Display a listing of the resource.
@@ -35,7 +37,15 @@ class CategoryController extends Controller
      */
     public function show($id)
     {
-        //
+        $category = Category::find($id)->toArray();
+        $tasks = Task::whereCategoryId($category['id'])->paginate(5);
+        $category['tasks'] = $tasks->toArray();
+
+        if (is_null($category)) {
+            return $this->sendError('Category not found.');
+        }
+
+        return $this->sendResponse($category, 'Category retrieved successfully.');
     }
 
     /**
@@ -56,8 +66,16 @@ class CategoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
-        //
+        $category = Category::find($id);
+
+        if (is_null($category)) {
+            return $this->sendError('Category not found.');
+        }
+
+        $category->delete();
+
+        return $this->sendResponse($category->toArray(), 'Category deleted successfully.');
     }
 }

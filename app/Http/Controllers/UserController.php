@@ -3,6 +3,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
+use Validator;
 
 class UserController extends BaseController
 {
@@ -52,7 +53,30 @@ class UserController extends BaseController
      */
     public function update(Request $request, $id)
     {
-        //
+        $input = $request->all();
+
+        if($request->user()->id != $id && $request->user()->role != 'admin'){
+            return $this->sendError('Not allowed');
+        }
+
+        $user = User::find($id);
+
+        if (is_null($user)) {
+            return $this->sendError('User not found.');
+        }
+
+        $validator = Validator::make($input, [
+            'name' => 'required',
+            'surname' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return $this->sendError('Validation Error.', $validator->errors());
+        }
+
+        $user->update($input);
+
+        return $this->sendResponse($user->toArray(), 'Task created successfully.');
     }
 
     /**
@@ -61,8 +85,14 @@ class UserController extends BaseController
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(User $user)
+    public function destroy($id)
     {
+        $user = User::find($id);
+
+        if (is_null($user)) {
+            return $this->sendError('User not found.');
+        }
+
         $user->delete();
 
         return $this->sendResponse($user->toArray(), 'User deleted successfully.');    
