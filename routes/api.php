@@ -14,13 +14,18 @@ use Illuminate\Http\Request;
 */
 Route::post('register', 'RegisterController@register');
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});
-
 Route::middleware('auth:api')->group( function () {
-    Route::resources([
+    Route::apiResources([
         'tasks' => 'TaskController',
-        'workspaces' => 'WorkspaceController'
+        'workspaces' => 'WorkspaceController',
+        'workgroups' => 'WorkgroupController',
+        'users' => 'UserController',
+        'categories' => 'CategoryController',
+        'preferences' => 'PreferenceController'
     ]);
+    
+    Route::get('/workspaces/{id}/users', 'WorkspaceController@getUsers');
+    Route::post('/workspaces/{id}/users', 'WorkspaceController@addUser');
+
+    Route::get('/user', 'UserController@authenticatedUser');
 });

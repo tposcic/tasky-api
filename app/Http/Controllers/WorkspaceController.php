@@ -23,16 +23,6 @@ class WorkspaceController extends BaseController
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -45,7 +35,8 @@ class WorkspaceController extends BaseController
         $validator = Validator::make($input, [
             'title' => 'required',
             'description' => 'required',
-            'icon' => 'nullable',
+            'type' => 'required|in:personal,private,public',
+            'icon' => 'required',
         ]);
 
         if ($validator->fails()) {
@@ -54,16 +45,20 @@ class WorkspaceController extends BaseController
 
         $workspace = Workspace::create($input);
 
-        $workspace->categories()->create([
+        $category = $workspace->categories()->create([
             'workspace_id' => $workspace->id,
             'title' => $workspace->title . " tasks",
             'description' => 'Default tasks category',
             'icon' => 'help',
         ]);
-        
+
         $workspace->users()->attach($request->user()->id, array('role' => 'admin'));
 
-        return $this->sendResponse($workspace->toArray(), 'Workspace created successfully.');
+        $workspace = $workspace->toArray();
+        $workspace['categories'] = array();
+        array_push($workspace['categories'], $category);
+
+        return $this->sendResponse($workspace, 'Workspace created successfully.');
     }
 
     /**
@@ -80,18 +75,7 @@ class WorkspaceController extends BaseController
             return $this->sendError('Workspace not found.');
         }
 
-        return $this->sendResponse($task->toArray(), 'Workspace retrieved successfully.');
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
+        return $this->sendResponse($workspace->toArray(), 'Workspace retrieved successfully.');
     }
 
     /**
@@ -103,7 +87,22 @@ class WorkspaceController extends BaseController
      */
     public function update(Request $request, Workspace $workspace)
     {
-        //
+        $input = $request->all();
+
+        $validator = Validator::make($input, [
+            'title' => 'required',
+            'description' => 'required',
+            'icon' => 'required',
+            'type' => 'in:personal,private,public',
+        ]);
+
+        if ($validator->fails()) {
+            return $this->sendError('Validation Error.', $validator->errors());
+        }
+
+        $workspace->update($validator);
+
+        return $this->sendResponse($workspace->toArray(), 'Workspace updated successfully.');
     }
 
     /**
@@ -112,8 +111,73 @@ class WorkspaceController extends BaseController
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request, Workspace $workspace)
     {
-        //
+        $workspace_role = $request->user()->workspaces()->whereWorkspaceId($workspace->id)->first()->pivot->role;
+
+        if($workspace_role !== 'admin'){
+            return $this->sendError('Insufficient permission for deleting workspace.');
+        }
+
+        $workspace->delete();
+
+        return $this->sendResponse($workspace->toArray(), 'Workspace deleted successfully.');
+    }
+
+    /**
+     * Get workspace users
+     *
+     * @param int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function getUsers($id)
+    {
+        $workspace = Workspace::find($id);
+
+        if (is_null($workspace)) {
+            return $this->sendError('Workspace not found.');
+        }
+
+        $users = $workspace->users;
+
+        return $this->sendResponse($users->toArray(), 'Workspace users retrieved successfully.');
+    }
+
+    /**
+     * Add user to workspace
+     *
+     * @param int $id
+     * @param Request $request
+     * @return \Illuminate\Http\Response
+     */
+    public function addUser($id, Request $request)
+    {
+        $input = $request->all();
+
+        $validator = Validator::make($input, [
+            'user_id' => 'required',
+            'role' => 'required|in:user,moderator,admin',
+        ]);
+
+        if ($validator->fails()) {
+            return $this->sendError('Validation Error.', $validator->errors());
+        }
+
+        $workspace = Workspace::find($id);
+
+        if (is_null($workspace)) {
+            return $this->sendError('Workspace not found.');
+        }
+
+        $user_id = $input['user_id'];
+        $user = User::find($user_id);
+
+        if (is_null($user)) {
+            return $this->sendError('User not found.');
+        }
+
+        $workspace->users()->attach($user_id, array('role' => $input['role']));
+
+        return $this->sendResponse($workspace->toArray(), 'User added to workspace ' . $workspace->title . '.');
     }
 }

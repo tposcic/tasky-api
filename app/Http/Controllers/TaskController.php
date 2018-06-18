@@ -3,8 +3,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Task;
-use Validator;
 use App\Models\User;
+use Validator;
 
 class TaskController extends BaseController
 {
@@ -18,15 +18,6 @@ class TaskController extends BaseController
         $tasks = Task::all();
 
         return $this->sendResponse($tasks->toArray(), 'Tasks retrieved successfully.');
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
     }
 
     /**
@@ -73,17 +64,6 @@ class TaskController extends BaseController
         }
 
         return $this->sendResponse($task->toArray(), 'Task retrieved successfully.');
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit()
-    {
-
     }
 
     /**

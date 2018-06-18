@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\Workgroup;
 use Validator;
 use App\Models\Workspace;
+use App\Models\Preference;
 
 class RegisterController extends BaseController
 {
@@ -29,8 +30,12 @@ class RegisterController extends BaseController
             return $this->sendError('Validation Error.', $validator->errors());
         }
 
+        $preferences = Preference::create();
+
         $input = $request->all();
         $input['password'] = bcrypt($input['password']);
+        $input['preference_id'] = $preferences->id;
+
         $user = User::create($input);
 
         $workspace = Workspace::create([
@@ -45,10 +50,6 @@ class RegisterController extends BaseController
             'title' => $user->name . "'s tasks",
             'description' => 'Default tasks category',
             'icon' => 'help',
-        ]);
-
-        $user->preferences()->create([
-            'user_id' => $user->id
         ]);
         
         $user->workspaces()->attach($workspace->id, array('role' => 'admin'));
