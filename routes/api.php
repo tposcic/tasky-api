@@ -21,7 +21,7 @@ Route::middleware('auth:api')->group(function () {
         'workgroups' => 'WorkgroupController',
         'users' => 'UserController',
         'categories' => 'CategoryController',
-        'preferences' => 'PreferenceController'
+        'preferences' => 'PreferencesController'
     ]);
 
     Route::get('/workspaces/{id}/users', 'WorkspaceController@getUsers');
