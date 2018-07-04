@@ -11,10 +11,10 @@ use Illuminate\Http\Request;
 | routes are loaded by the RouteServiceProvider within a group which
 | is assigned the "api" middleware group. Enjoy building your API!
 |
-*/
+ */
 Route::post('register', 'RegisterController@register');
 
-Route::middleware('auth:api')->group( function () {
+Route::middleware('auth:api')->group(function () {
     Route::apiResources([
         'tasks' => 'TaskController',
         'workspaces' => 'WorkspaceController',
@@ -23,7 +23,7 @@ Route::middleware('auth:api')->group( function () {
         'categories' => 'CategoryController',
         'preferences' => 'PreferenceController'
     ]);
-    
+
     Route::get('/workspaces/{id}/users', 'WorkspaceController@getUsers');
     Route::post('/workspaces/{id}/users', 'WorkspaceController@addUser');
 

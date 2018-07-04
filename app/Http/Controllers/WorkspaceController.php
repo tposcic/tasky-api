@@ -17,7 +17,7 @@ class WorkspaceController extends BaseController
     public function index(Request $request)
     {
         $user = User::find($request->user()->id);
-        $workspaces = $user->workspaces()->with('categories')->get();
+        $workspaces = $user->workspaces()->with('categories')->paginate(10);
 
         return $this->sendResponse($workspaces->toArray(), 'Workspaces retrieved successfully.');
     }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Category;
 use App\Models\Task;
+use Validator;
 
 class CategoryController extends BaseController
 {
@@ -26,7 +27,22 @@ class CategoryController extends BaseController
      */
     public function store(Request $request)
     {
-        //
+        $input = $request->all();
+
+        $validator = Validator::make($input, [
+            'title' => 'required',
+            'description' => 'required',
+            'workspace_id' => 'required',
+            'icon' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return $this->sendError('Validation Error.', $validator->errors());
+        }
+
+        $category = Category::create($input);
+
+        return $this->sendResponse($category, 'Category created successfully.');
     }
 
     /**
@@ -38,7 +54,7 @@ class CategoryController extends BaseController
     public function show($id)
     {
         $category = Category::find($id)->toArray();
-        $tasks = Task::whereCategoryId($category['id'])->paginate(5);
+        $tasks = Task::whereCategoryId($category['id'])->paginate(10);
         $category['tasks'] = $tasks->toArray();
 
         if (is_null($category)) {
@@ -57,7 +73,28 @@ class CategoryController extends BaseController
      */
     public function update(Request $request, $id)
     {
-        //
+        $category = Category::find($id);
+
+        if (is_null($category)) {
+            return $this->sendError('Category not found.');
+        }
+
+        $input = $request->all();
+
+        $validator = Validator::make($input, [
+            'title' => 'required',
+            'description' => 'required',
+            'workspace_id' => 'required',
+            'icon' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return $this->sendError('Validation Error.', $validator->errors());
+        }
+
+        $category->update($validator);
+
+        return $this->sendResponse($category, 'Category created successfully.');
     }
 
     /**
