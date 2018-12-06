@@ -15,7 +15,7 @@ class Cors
      */
     public function handle($request, Closure $next)
     {
-        $allowedOrigins = ['http://localhost'];//localhost hack
+        $allowedOrigins = ['http://localhost:4200'];//localhost hack
         $origin = isset($_SERVER['HTTP_ORIGIN']) ? $_SERVER['HTTP_ORIGIN'] : '';
         if (in_array($origin, $allowedOrigins)) {
             return $next($request)
