@@ -14,7 +14,7 @@ use Illuminate\Http\Request;
  */
 Route::post('register', 'RegisterController@register');
 
-Route::middleware('auth:api', 'cors')->group(function () {
+Route::middleware(['auth:api', 'cors'])->group(function () {
     Route::apiResources([
         'tasks' => 'TaskController',
         'workspaces' => 'WorkspaceController',
