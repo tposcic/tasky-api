@@ -25,4 +25,8 @@ class HomeController extends Controller
     {
         return view('home');
     }
+
+    public function info(){
+        return response()->json([], 200);
+    }
 }
