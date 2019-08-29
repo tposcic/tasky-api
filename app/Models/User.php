@@ -60,6 +60,21 @@ class User extends Authenticatable
 					->withPivot('id');
 	}
 
+	public function projects()
+	{
+		return $this->hasMany(\App\Models\Project::class);
+	}
+
+	public function activities()
+	{
+		return $this->hasManyThrough('App\Models\Activity','App\Models\Project');
+	}
+
+	public function logs()
+	{
+		return $this->hasManyThrough('App\Models\Log','App\Models\Project');
+	}
+
 	public function workgroups()
 	{
 		return $this->belongsToMany(\App\Models\Workgroup::class, 'workgroup_user')

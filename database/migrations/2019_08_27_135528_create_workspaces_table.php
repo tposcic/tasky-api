@@ -3,7 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 
-class CreateWorkgroupsTable extends Migration {
+class CreateWorkspacesTable extends Migration {
 
 	/**
 	 * Run the migrations.
@@ -12,12 +12,13 @@ class CreateWorkgroupsTable extends Migration {
 	 */
 	public function up()
 	{
-		Schema::create('workgroups', function(Blueprint $table)
+		Schema::create('workspaces', function(Blueprint $table)
 		{
 			$table->increments('id');
 			$table->string('title')->nullable();
 			$table->string('description')->nullable();
 			$table->string('icon')->nullable();
+			$table->enum('type', array('personal','private','public'))->default('public');
 			$table->timestamps();
 			$table->softDeletes();
 		});
@@ -31,7 +32,7 @@ class CreateWorkgroupsTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('workgroups');
+		Schema::drop('workspaces');
 	}
 
 }

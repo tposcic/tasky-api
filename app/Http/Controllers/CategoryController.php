@@ -51,10 +51,12 @@ class CategoryController extends BaseController
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($id, Request $request)
     {
+        $per_page = $request->input('per_page') ? $request->input('per_page') : 20;
+
         $category = Category::find($id)->toArray();
-        $tasks = Task::whereCategoryId($category['id'])->paginate(10);
+        $tasks = Task::whereCategoryId($category['id'])->paginate($per_page);
         $category['tasks'] = $tasks->toArray();
 
         if (is_null($category)) {

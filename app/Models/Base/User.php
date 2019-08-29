@@ -2,7 +2,7 @@
 
 /**
  * Created by Reliese Model.
- * Date: Mon, 18 Jun 2018 00:23:34 +0000.
+ * Date: Thu, 29 Aug 2019 18:51:02 +0000.
  */
 
 namespace App\Models\Base;
@@ -25,6 +25,7 @@ use Reliese\Database\Eloquent\Model as Eloquent;
  * @property string $deleted_at
  * 
  * @property \App\Models\Preference $preference
+ * @property \Illuminate\Database\Eloquent\Collection $projects
  * @property \Illuminate\Database\Eloquent\Collection $tasks
  * @property \Illuminate\Database\Eloquent\Collection $workgroups
  * @property \Illuminate\Database\Eloquent\Collection $workspaces
@@ -42,6 +43,11 @@ class User extends Eloquent
 	public function preference()
 	{
 		return $this->belongsTo(\App\Models\Preference::class);
+	}
+
+	public function projects()
+	{
+		return $this->hasMany(\App\Models\Project::class);
 	}
 
 	public function tasks()

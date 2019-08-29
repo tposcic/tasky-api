@@ -10,37 +10,42 @@ namespace App\Models\Base;
 use Reliese\Database\Eloquent\Model as Eloquent;
 
 /**
- * Class Category
+ * Class Project
  * 
  * @property int $id
- * @property int $workspace_id
+ * @property int $user_id
  * @property string $title
  * @property string $description
- * @property string $icon
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  * @property string $deleted_at
  * 
- * @property \App\Models\Workspace $workspace
- * @property \Illuminate\Database\Eloquent\Collection $tasks
+ * @property \App\Models\User $user
+ * @property \Illuminate\Database\Eloquent\Collection $activities
+ * @property \Illuminate\Database\Eloquent\Collection $logs
  *
  * @package App\Models\Base
  */
-class Category extends Eloquent
+class Project extends Eloquent
 {
 	use \Illuminate\Database\Eloquent\SoftDeletes;
 
 	protected $casts = [
-		'workspace_id' => 'int'
+		'user_id' => 'int'
 	];
 
-	public function workspace()
+	public function user()
 	{
-		return $this->belongsTo(\App\Models\Workspace::class);
+		return $this->belongsTo(\App\Models\User::class);
 	}
 
-	public function tasks()
+	public function activities()
 	{
-		return $this->hasMany(\App\Models\Task::class);
+		return $this->hasMany(\App\Models\Activity::class);
+	}
+
+	public function logs()
+	{
+		return $this->hasMany(\App\Models\Log::class);
 	}
 }
