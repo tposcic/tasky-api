@@ -35,7 +35,8 @@ class LogController extends BaseController
             'title' => 'nullable|string',
             'description' => 'nullable|string',
             'project_id' => 'required',
-            'activity_id' => 'required'
+            'activity_id' => 'required',
+            'started_at' => 'required'
         ]);
 
         if ($validator->fails()) {
