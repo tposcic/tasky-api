@@ -16,7 +16,16 @@ class LogController extends BaseController
      */
     public function index(Request $request)
     {
-        $logs = $request->user()->logs()->paginate(50);
+        $input = $request->input();
+
+        $input['selected'];
+        $logs = $request->user()->logs();
+
+        if($input['selected'] == 'all'){
+            $logs = $logs->paginate(50);
+        } else {
+            $logs = $logs->where('project_id', $input['selected'])->paginate(50);
+        }
 
         return $this->sendResponse($logs, 'Logs retrieved successfully.');    
     }
@@ -43,7 +52,7 @@ class LogController extends BaseController
             return $this->sendError('Validation Error.', $validator->errors());
         }
 
-        $input['started_at'] = Carbon::now();
+        // $input['started_at'] = Carbon::now();
 
         $log = Log::create($input);
 
