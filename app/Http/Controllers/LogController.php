@@ -101,7 +101,7 @@ class LogController extends BaseController
 
         if ($validator->fails()) {
             return $this->sendError('Validation Error.', $validator->errors());
-        }
+        } 
 
         $log->update($input);
 
