@@ -99,9 +99,13 @@ class LogController extends BaseController
             'finished_at' => 'nullable|string',
         ]);
 
+        // if(isset($input['finished_at'])){
+        //     $input['finished_at'] = Carbon::now();
+        // }
+
         if ($validator->fails()) {
             return $this->sendError('Validation Error.', $validator->errors());
-        } 
+        }
 
         $log->update($input);
 

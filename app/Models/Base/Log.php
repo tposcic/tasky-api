@@ -2,7 +2,7 @@
 
 /**
  * Created by Reliese Model.
- * Date: Thu, 29 Aug 2019 18:51:02 +0000.
+ * Date: Thu, 12 Dec 2019 14:12:37 +0000.
  */
 
 namespace App\Models\Base;
@@ -19,6 +19,7 @@ use Reliese\Database\Eloquent\Model as Eloquent;
  * @property string $description
  * @property \Carbon\Carbon $started_at
  * @property \Carbon\Carbon $finished_at
+ * @property int $seconds
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  * @property string $deleted_at
@@ -34,7 +35,8 @@ class Log extends Eloquent
 
 	protected $casts = [
 		'activity_id' => 'int',
-		'project_id' => 'int'
+		'project_id' => 'int',
+		'seconds' => 'int'
 	];
 
 	protected $dates = [
@@ -51,8 +53,4 @@ class Log extends Eloquent
 	{
 		return $this->belongsTo(\App\Models\Project::class);
 	}
-
-	public function scopeUser($query, $id){
-		return $query->leftJoin('projects', 'projects.id', '=', 'activities.project_id')->where('projects.user_id', $id);
-	}	
 }

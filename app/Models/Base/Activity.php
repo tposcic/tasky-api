@@ -2,7 +2,7 @@
 
 /**
  * Created by Reliese Model.
- * Date: Thu, 29 Aug 2019 18:51:02 +0000.
+ * Date: Thu, 12 Dec 2019 14:12:37 +0000.
  */
 
 namespace App\Models\Base;
@@ -41,10 +41,5 @@ class Activity extends Eloquent
 	public function logs()
 	{
 		return $this->hasMany(\App\Models\Log::class);
-	}
-
-	public function scopeUser($query, $id){
-		return $query->leftJoin('projects', 'projects.id', '=', 'activities.project_id')->select('projects.user_id')
-		->select('activities.*')->where('projects.user_id', $id);
 	}
 }

@@ -10,7 +10,8 @@ class Log extends \App\Models\Base\Log
 		'title',
 		'description',
 		'started_at',
-		'finished_at'
+		'finished_at',
+		'seconds'
 	];
 
 	public function scopeUser($query, $id){
