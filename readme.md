@@ -1,6 +1,6 @@
 ## Setup
 
-`composer install`
-`php artisan key:generate`
-`php artisan migrate`
-`php artisan passport:install`
+`composer install`  
+`php artisan key:generate`  
+`php artisan migrate`  
+`php artisan passport:install`  
